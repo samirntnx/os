@@ -91,3 +91,5 @@ func (recv *CmdImpl) StderrPipe() (io.ReadCloser, error) {
 func (recv *CmdImpl) Environ() []string {
 	return recv.Cmd.Environ()
 }
+
+var EXEC = &ExecImpl{}
