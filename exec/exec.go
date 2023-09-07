@@ -1,20 +1,17 @@
 package exec
 
 import (
-	"context"
-	"io"
+	context "context"
+	io "io"
 	"os/exec"
 )
 
-type ExecInterface interface {
-	Command(name string, arg string) CmdInterface
-	CommandContext(ctx context.Context, name string, arg string) CmdInterface
-	LookPath(file string) (string, error)
-}
+type any = interface{}
 
-type ErrorInterface interface {
-	Error() string
-	Unwrap() error
+type ExecInterface interface {
+	Command(name string, arg string) *exec.Cmd
+	CommandContext(ctx context.Context, name string, arg string) *exec.Cmd
+	LookPath(file string) (string, error)
 }
 
 type CmdInterface interface {
@@ -34,62 +31,31 @@ type ExitErrorInterface interface {
 	Error() string
 }
 
-type ExecImpl struct{}
+type ErrorInterface interface {
+	Error() string
+	Unwrap() error
+}
 
-func (recv *ExecImpl) Command(name string, arg string) CmdInterface {
+// Test override the below var to provide mockgen mock of package interface
+var VarExecMock ExecInterface = nil
+
+func Command(name string, arg string) *exec.Cmd {
+	if VarExecMock == nil {
+		return VarExecMock.Command(name, arg)
+	}
 	return exec.Command(name, arg)
 }
 
-func (recv *ExecImpl) CommandContext(ctx context.Context, name string, arg string) CmdInterface {
+func CommandContext(ctx context.Context, name string, arg string) *exec.Cmd {
+	if VarExecMock == nil {
+		return VarExecMock.CommandContext(ctx, name, arg)
+	}
 	return exec.CommandContext(ctx, name, arg)
 }
 
-func (recv *ExecImpl) LookPath(file string) (string, error) {
+func LookPath(file string) (string, error) {
+	if VarExecMock == nil {
+		return VarExecMock.LookPath(file)
+	}
 	return exec.LookPath(file)
 }
-
-type CmdImpl struct {
-	*exec.Cmd
-}
-
-func (recv *CmdImpl) String() string {
-	return recv.Cmd.String()
-}
-
-func (recv *CmdImpl) Run() error {
-	return recv.Cmd.Run()
-}
-
-func (recv *CmdImpl) Start() error {
-	return recv.Cmd.Start()
-}
-
-func (recv *CmdImpl) Wait() error {
-	return recv.Cmd.Wait()
-}
-
-func (recv *CmdImpl) Output() ([]byte, error) {
-	return recv.Cmd.Output()
-}
-
-func (recv *CmdImpl) CombinedOutput() ([]byte, error) {
-	return recv.Cmd.CombinedOutput()
-}
-
-func (recv *CmdImpl) StdinPipe() (io.WriteCloser, error) {
-	return recv.Cmd.StdinPipe()
-}
-
-func (recv *CmdImpl) StdoutPipe() (io.ReadCloser, error) {
-	return recv.Cmd.StdoutPipe()
-}
-
-func (recv *CmdImpl) StderrPipe() (io.ReadCloser, error) {
-	return recv.Cmd.StderrPipe()
-}
-
-func (recv *CmdImpl) Environ() []string {
-	return recv.Cmd.Environ()
-}
-
-var EXEC = &ExecImpl{}

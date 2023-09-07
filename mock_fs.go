@@ -130,10 +130,10 @@ func (mr *MockOsInterfaceMockRecorder) Clearenv() *gomock.Call {
 }
 
 // Create mocks base method.
-func (m *MockOsInterface) Create(name string) (FileInterface, error) {
+func (m *MockOsInterface) Create(name string) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", name)
-	ret0, _ := ret[0].(FileInterface)
+	ret0, _ := ret[0].(*os.File)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -145,10 +145,10 @@ func (mr *MockOsInterfaceMockRecorder) Create(name interface{}) *gomock.Call {
 }
 
 // CreateTemp mocks base method.
-func (m *MockOsInterface) CreateTemp(dir, pattern string) (FileInterface, error) {
+func (m *MockOsInterface) CreateTemp(dir, pattern string) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateTemp", dir, pattern)
-	ret0, _ := ret[0].(FileInterface)
+	ret0, _ := ret[0].(*os.File)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -243,10 +243,10 @@ func (mr *MockOsInterfaceMockRecorder) ExpandEnv(s interface{}) *gomock.Call {
 }
 
 // FindProcess mocks base method.
-func (m *MockOsInterface) FindProcess(pid int) (ProcessInterface, error) {
+func (m *MockOsInterface) FindProcess(pid int) (*os.Process, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindProcess", pid)
-	ret0, _ := ret[0].(ProcessInterface)
+	ret0, _ := ret[0].(*os.Process)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -586,10 +586,10 @@ func (mr *MockOsInterfaceMockRecorder) MkdirTemp(dir, pattern interface{}) *gomo
 }
 
 // NewFile mocks base method.
-func (m *MockOsInterface) NewFile(fd uintptr, name string) FileInterface {
+func (m *MockOsInterface) NewFile(fd uintptr, name string) *os.File {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "NewFile", fd, name)
-	ret0, _ := ret[0].(FileInterface)
+	ret0, _ := ret[0].(*os.File)
 	return ret0
 }
 
@@ -614,10 +614,10 @@ func (mr *MockOsInterfaceMockRecorder) NewSyscallError(syscall, err interface{})
 }
 
 // Open mocks base method.
-func (m *MockOsInterface) Open(name string) (FileInterface, error) {
+func (m *MockOsInterface) Open(name string) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Open", name)
-	ret0, _ := ret[0].(FileInterface)
+	ret0, _ := ret[0].(*os.File)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -629,10 +629,10 @@ func (mr *MockOsInterfaceMockRecorder) Open(name interface{}) *gomock.Call {
 }
 
 // OpenFile mocks base method.
-func (m *MockOsInterface) OpenFile(name string, flag int, perm os.FileMode) (FileInterface, error) {
+func (m *MockOsInterface) OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "OpenFile", name, flag, perm)
-	ret0, _ := ret[0].(FileInterface)
+	ret0, _ := ret[0].(*os.File)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -644,11 +644,11 @@ func (mr *MockOsInterfaceMockRecorder) OpenFile(name, flag, perm interface{}) *g
 }
 
 // Pipe mocks base method.
-func (m *MockOsInterface) Pipe() (FileInterface, FileInterface, error) {
+func (m *MockOsInterface) Pipe() (*os.File, *os.File, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Pipe")
-	ret0, _ := ret[0].(FileInterface)
-	ret1, _ := ret[1].(FileInterface)
+	ret0, _ := ret[0].(*os.File)
+	ret1, _ := ret[1].(*os.File)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -775,10 +775,10 @@ func (mr *MockOsInterfaceMockRecorder) Setenv(key, value interface{}) *gomock.Ca
 }
 
 // StartProcess mocks base method.
-func (m *MockOsInterface) StartProcess(name string, argv []string, attr *os.ProcAttr) (ProcessInterface, error) {
+func (m *MockOsInterface) StartProcess(name string, argv []string, attr *os.ProcAttr) (*os.Process, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StartProcess", name, argv, attr)
-	ret0, _ := ret[0].(ProcessInterface)
+	ret0, _ := ret[0].(*os.Process)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -1407,10 +1407,10 @@ func (mr *MockProcessInterfaceMockRecorder) Signal(sig interface{}) *gomock.Call
 }
 
 // Wait mocks base method.
-func (m *MockProcessInterface) Wait() (ProcessStateInterface, error) {
+func (m *MockProcessInterface) Wait() (*os.ProcessState, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Wait")
-	ret0, _ := ret[0].(ProcessStateInterface)
+	ret0, _ := ret[0].(*os.ProcessState)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

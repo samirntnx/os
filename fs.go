@@ -1,78 +1,76 @@
 package os
 
 import (
-	"io"
-	"io/fs"
-	"os"
-	"syscall"
-	"time"
+	io "io"
+	fs "io/fs"
+	os "os"
+	syscall "syscall"
+	time "time"
 )
 
 type any = interface{}
 
-// This file is generated using samirntnx/mockpackage
-
 type OsInterface interface {
-	Setenv(key, value string) error
-	Getppid() int
-	Create(name string) (FileInterface, error)
-	UserHomeDir() (string, error)
-	Pipe() (r FileInterface, w FileInterface, err error)
-	Getuid() int
-	SameFile(fi1, fi2 os.FileInfo) bool
-	Clearenv()
-	Getpid() int
-	UserCacheDir() (string, error)
-	ReadFile(name string) ([]byte, error)
-	Getpagesize() int
-	Unsetenv(key string) error
-	FindProcess(pid int) (ProcessInterface, error)
-	Chmod(name string, mode os.FileMode) error
-	Lstat(name string) (os.FileInfo, error)
-	Rename(oldpath, newpath string) error
-	DirFS(dir string) fs.FS
-	WriteFile(name string, data []byte, perm os.FileMode) error
-	NewSyscallError(syscall string, err error) error
-	IsExist(err error) bool
-	OpenFile(name string, flag int, perm os.FileMode) (FileInterface, error)
-	MkdirTemp(dir, pattern string) (string, error)
-	ReadDir(name string) ([]os.DirEntry, error)
-	Symlink(oldname, newname string) error
-	IsPathSeparator(c uint8) bool
-	Getegid() int
-	ExpandEnv(s string) string
-	Link(oldname, newname string) error
-	Open(name string) (FileInterface, error)
-	NewFile(fd uintptr, name string) FileInterface
-	Chown(name string, uid, gid int) error
-	Exit(code int)
-	Environ() []string
-	IsNotExist(err error) bool
-	IsTimeout(err error) bool
-	UserConfigDir() (string, error)
 	Lchown(name string, uid, gid int) error
-	Getgid() int
-	Chdir(dir string) error
+	ExpandEnv(s string) string
+	Setenv(key, value string) error
+	NewSyscallError(syscall string, err error) error
+	IsPermission(err error) bool
+	StartProcess(name string, argv []string, attr *os.ProcAttr) (*os.Process, error)
+	UserConfigDir() (string, error)
+	NewFile(fd uintptr, name string) *os.File
+	Executable() (string, error)
+	Rename(oldpath, newpath string) error
+	Chtimes(name string, atime time.Time, mtime time.Time) error
+	Symlink(oldname, newname string) error
 	Getenv(key string) string
+	Create(name string) (*os.File, error)
+	IsPathSeparator(c uint8) bool
+	Lstat(name string) (os.FileInfo, error)
+	IsTimeout(err error) bool
+	UserCacheDir() (string, error)
+	Truncate(name string, size int64) error
+	Getgid() int
+	Expand(s string, mapping func(string) string) string
+	Readlink(name string) (string, error)
+	MkdirTemp(dir, pattern string) (string, error)
+	Getpagesize() int
+	LookupEnv(key string) (string, bool)
+	Clearenv()
+	RemoveAll(path string) error
+	Getuid() int
+	Hostname() (name string, err error)
+	Getegid() int
+	Unsetenv(key string) error
+	WriteFile(name string, data []byte, perm os.FileMode) error
+	Chown(name string, uid, gid int) error
+	MkdirAll(path string, perm os.FileMode) error
+	CreateTemp(dir, pattern string) (*os.File, error)
+	ReadDir(name string) ([]os.DirEntry, error)
+	Open(name string) (*os.File, error)
+	DirFS(dir string) fs.FS
+	OpenFile(name string, flag int, perm os.FileMode) (*os.File, error)
+	Chmod(name string, mode os.FileMode) error
+	Getwd() (dir string, err error)
+	Pipe() (r *os.File, w *os.File, err error)
+	FindProcess(pid int) (*os.Process, error)
+	Exit(code int)
 	Mkdir(name string, perm os.FileMode) error
+	Chdir(dir string) error
+	SameFile(fi1, fi2 os.FileInfo) bool
+	Getpid() int
 	TempDir() string
+	Remove(name string) error
 	Geteuid() int
 	Getgroups() ([]int, error)
+	IsExist(err error) bool
+	Environ() []string
+	IsNotExist(err error) bool
+	Getppid() int
+	UserHomeDir() (string, error)
+	ReadFile(name string) ([]byte, error)
+	Link(oldname, newname string) error
 	Stat(name string) (os.FileInfo, error)
-	Chtimes(name string, atime time.Time, mtime time.Time) error
-	Remove(name string) error
-	Readlink(name string) (string, error)
-	Getwd() (dir string, err error)
-	RemoveAll(path string) error
-	Hostname() (name string, err error)
-	Expand(s string, mapping func(string) string) string
-	LookupEnv(key string) (string, bool)
-	IsPermission(err error) bool
-	StartProcess(name string, argv []string, attr *os.ProcAttr) (ProcessInterface, error)
-	Executable() (string, error)
-	Truncate(name string, size int64) error
-	MkdirAll(path string, perm os.FileMode) error
-	CreateTemp(dir, pattern string) (FileInterface, error)
 }
 
 type FileInterface interface {
@@ -110,7 +108,7 @@ type SyscallErrorInterface interface {
 type ProcessInterface interface {
 	Release() error
 	Kill() error
-	Wait() (ProcessStateInterface, error)
+	Wait() (*os.ProcessState, error)
 	Signal(sig os.Signal) error
 }
 
@@ -131,442 +129,425 @@ type LinkErrorInterface interface {
 	Unwrap() error
 }
 
-type OsImpl struct{}
+// Test override the below var to provide mockgen mock of package interface
+var VarOsMock OsInterface = nil
 
-func (recv *OsImpl) Chown(name string, uid, gid int) error {
-	return os.Chown(name, uid, gid)
-}
-
-func (recv *OsImpl) Exit(code int) {
-	os.Exit(code)
-}
-
-func (recv *OsImpl) Environ() []string {
-	return os.Environ()
-}
-
-func (recv *OsImpl) IsNotExist(err error) bool {
-	return os.IsNotExist(err)
-}
-
-func (recv *OsImpl) IsTimeout(err error) bool {
-	return os.IsTimeout(err)
-}
-
-func (recv *OsImpl) UserConfigDir() (string, error) {
-	return os.UserConfigDir()
-}
-
-func (recv *OsImpl) Lchown(name string, uid, gid int) error {
-	return os.Lchown(name, uid, gid)
-}
-
-func (recv *OsImpl) Getgid() int {
-	return os.Getgid()
-}
-
-func (recv *OsImpl) Chdir(dir string) error {
-	return os.Chdir(dir)
-}
-
-func (recv *OsImpl) Getenv(key string) string {
-	return os.Getenv(key)
-}
-
-func (recv *OsImpl) Mkdir(name string, perm os.FileMode) error {
-	return os.Mkdir(name, perm)
-}
-
-func (recv *OsImpl) TempDir() string {
-	return os.TempDir()
-}
-
-func (recv *OsImpl) Geteuid() int {
-	return os.Geteuid()
-}
-
-func (recv *OsImpl) Getgroups() ([]int, error) {
-	return os.Getgroups()
-}
-
-func (recv *OsImpl) Stat(name string) (os.FileInfo, error) {
-	return os.Stat(name)
-}
-
-func (recv *OsImpl) Chtimes(name string, atime time.Time, mtime time.Time) error {
-	return os.Chtimes(name, atime, mtime)
-}
-
-func (recv *OsImpl) Remove(name string) error {
-	return os.Remove(name)
-}
-
-func (recv *OsImpl) Readlink(name string) (string, error) {
-	return os.Readlink(name)
-}
-
-func (recv *OsImpl) Getwd() (dir string, err error) {
-	return os.Getwd()
-}
-
-func (recv *OsImpl) RemoveAll(path string) error {
-	return os.RemoveAll(path)
-}
-
-func (recv *OsImpl) Hostname() (name string, err error) {
-	return os.Hostname()
-}
-
-func (recv *OsImpl) Expand(s string, mapping func(string) string) string {
-	return os.Expand(s, mapping)
-}
-
-func (recv *OsImpl) LookupEnv(key string) (string, bool) {
-	return os.LookupEnv(key)
-}
-
-func (recv *OsImpl) IsPermission(err error) bool {
-	return os.IsPermission(err)
-}
-
-func (recv *OsImpl) StartProcess(name string, argv []string, attr *os.ProcAttr) (ProcessInterface, error) {
-	ret1, err := os.StartProcess(name, argv, attr)
-	if ret1 != nil {
-		return &ProcessImpl{
-			Process: ret1,
-		}, err
+func IsExist(err error) bool {
+	if VarOsMock == nil {
+		return VarOsMock.IsExist(err)
 	}
-	return nil, err
-}
-
-func (recv *OsImpl) Executable() (string, error) {
-	return os.Executable()
-}
-
-func (recv *OsImpl) Truncate(name string, size int64) error {
-	return os.Truncate(name, size)
-}
-
-func (recv *OsImpl) MkdirAll(path string, perm os.FileMode) error {
-	return os.MkdirAll(path, perm)
-}
-
-func (recv *OsImpl) CreateTemp(dir, pattern string) (FileInterface, error) {
-	return os.CreateTemp(dir, pattern)
-}
-
-func (recv *OsImpl) Setenv(key, value string) error {
-	return os.Setenv(key, value)
-}
-
-func (recv *OsImpl) Getppid() int {
-	return os.Getppid()
-}
-
-func (recv *OsImpl) Create(name string) (FileInterface, error) {
-	return os.Create(name)
-}
-
-func (recv *OsImpl) UserHomeDir() (string, error) {
-	return os.UserHomeDir()
-}
-
-func (recv *OsImpl) Pipe() (r FileInterface, w FileInterface, err error) {
-	return os.Pipe()
-}
-
-func (recv *OsImpl) Getuid() int {
-	return os.Getuid()
-}
-
-func (recv *OsImpl) SameFile(fi1, fi2 os.FileInfo) bool {
-	return os.SameFile(fi1, fi2)
-}
-
-func (recv *OsImpl) Clearenv() {
-	os.Clearenv()
-}
-
-func (recv *OsImpl) Getpid() int {
-	return os.Getpid()
-}
-
-func (recv *OsImpl) UserCacheDir() (string, error) {
-	return os.UserCacheDir()
-}
-
-func (recv *OsImpl) ReadFile(name string) ([]byte, error) {
-	return os.ReadFile(name)
-}
-
-func (recv *OsImpl) Getpagesize() int {
-	return os.Getpagesize()
-}
-
-func (recv *OsImpl) Unsetenv(key string) error {
-	return os.Unsetenv(key)
-}
-
-func (recv *OsImpl) FindProcess(pid int) (ProcessInterface, error) {
-	ret1, err := os.FindProcess(pid)
-	if ret1 != nil {
-		return &ProcessImpl{
-			Process: ret1,
-		}, err
-	}
-	return nil, err
-}
-
-func (recv *OsImpl) Chmod(name string, mode os.FileMode) error {
-	return os.Chmod(name, mode)
-}
-
-func (recv *OsImpl) Lstat(name string) (os.FileInfo, error) {
-	return os.Lstat(name)
-}
-
-func (recv *OsImpl) Rename(oldpath, newpath string) error {
-	return os.Rename(oldpath, newpath)
-}
-
-func (recv *OsImpl) DirFS(dir string) fs.FS {
-	return os.DirFS(dir)
-}
-
-func (recv *OsImpl) WriteFile(name string, data []byte, perm os.FileMode) error {
-	return os.WriteFile(name, data, perm)
-}
-
-func (recv *OsImpl) NewSyscallError(syscall string, err error) error {
-	return os.NewSyscallError(syscall, err)
-}
-
-func (recv *OsImpl) IsExist(err error) bool {
 	return os.IsExist(err)
 }
 
-func (recv *OsImpl) OpenFile(name string, flag int, perm os.FileMode) (FileInterface, error) {
-	return os.OpenFile(name, flag, perm)
+func ReadFile(name string) ([]byte, error) {
+	if VarOsMock == nil {
+		return VarOsMock.ReadFile(name)
+	}
+	return os.ReadFile(name)
 }
 
-func (recv *OsImpl) MkdirTemp(dir, pattern string) (string, error) {
-	return os.MkdirTemp(dir, pattern)
-}
-
-func (recv *OsImpl) ReadDir(name string) ([]os.DirEntry, error) {
-	return os.ReadDir(name)
-}
-
-func (recv *OsImpl) Symlink(oldname, newname string) error {
-	return os.Symlink(oldname, newname)
-}
-
-func (recv *OsImpl) IsPathSeparator(c uint8) bool {
-	return os.IsPathSeparator(c)
-}
-
-func (recv *OsImpl) Getegid() int {
-	return os.Getegid()
-}
-
-func (recv *OsImpl) ExpandEnv(s string) string {
-	return os.ExpandEnv(s)
-}
-
-func (recv *OsImpl) Link(oldname, newname string) error {
+func Link(oldname, newname string) error {
+	if VarOsMock == nil {
+		return VarOsMock.Link(oldname, newname)
+	}
 	return os.Link(oldname, newname)
 }
 
-func (recv *OsImpl) Open(name string) (FileInterface, error) {
-	return os.Open(name)
+func Stat(name string) (os.FileInfo, error) {
+	if VarOsMock == nil {
+		return VarOsMock.Stat(name)
+	}
+	return os.Stat(name)
 }
 
-func (recv *OsImpl) NewFile(fd uintptr, name string) FileInterface {
+func Environ() []string {
+	if VarOsMock == nil {
+		return VarOsMock.Environ()
+	}
+	return os.Environ()
+}
+
+func IsNotExist(err error) bool {
+	if VarOsMock == nil {
+		return VarOsMock.IsNotExist(err)
+	}
+	return os.IsNotExist(err)
+}
+
+func Getppid() int {
+	if VarOsMock == nil {
+		return VarOsMock.Getppid()
+	}
+	return os.Getppid()
+}
+
+func UserHomeDir() (string, error) {
+	if VarOsMock == nil {
+		return VarOsMock.UserHomeDir()
+	}
+	return os.UserHomeDir()
+}
+
+func Lchown(name string, uid, gid int) error {
+	if VarOsMock == nil {
+		return VarOsMock.Lchown(name, uid, gid)
+	}
+	return os.Lchown(name, uid, gid)
+}
+
+func StartProcess(name string, argv []string, attr *os.ProcAttr) (*os.Process, error) {
+	if VarOsMock == nil {
+		return VarOsMock.StartProcess(name, argv, attr)
+	}
+	return os.StartProcess(name, argv, attr)
+}
+
+func UserConfigDir() (string, error) {
+	if VarOsMock == nil {
+		return VarOsMock.UserConfigDir()
+	}
+	return os.UserConfigDir()
+}
+
+func NewFile(fd uintptr, name string) *os.File {
+	if VarOsMock == nil {
+		return VarOsMock.NewFile(fd, name)
+	}
 	return os.NewFile(fd, name)
 }
 
-type FileImpl struct {
-	*os.File
+func ExpandEnv(s string) string {
+	if VarOsMock == nil {
+		return VarOsMock.ExpandEnv(s)
+	}
+	return os.ExpandEnv(s)
 }
 
-func (recv *FileImpl) Readdir(n int) ([]os.FileInfo, error) {
-	return recv.File.Readdir(n)
+func Setenv(key, value string) error {
+	if VarOsMock == nil {
+		return VarOsMock.Setenv(key, value)
+	}
+	return os.Setenv(key, value)
 }
 
-func (recv *FileImpl) Readdirnames(n int) (names []string, err error) {
-	return recv.File.Readdirnames(n)
+func NewSyscallError(syscall string, err error) error {
+	if VarOsMock == nil {
+		return VarOsMock.NewSyscallError(syscall, err)
+	}
+	return os.NewSyscallError(syscall, err)
 }
 
-func (recv *FileImpl) ReadDir(n int) ([]os.DirEntry, error) {
-	return recv.File.ReadDir(n)
+func IsPermission(err error) bool {
+	if VarOsMock == nil {
+		return VarOsMock.IsPermission(err)
+	}
+	return os.IsPermission(err)
 }
 
-func (recv *FileImpl) Name() string {
-	return recv.File.Name()
+func Executable() (string, error) {
+	if VarOsMock == nil {
+		return VarOsMock.Executable()
+	}
+	return os.Executable()
 }
 
-func (recv *FileImpl) Read(b []byte) (n int, err error) {
-	return recv.File.Read(b)
+func Rename(oldpath, newpath string) error {
+	if VarOsMock == nil {
+		return VarOsMock.Rename(oldpath, newpath)
+	}
+	return os.Rename(oldpath, newpath)
 }
 
-func (recv *FileImpl) ReadAt(b []byte, off int64) (n int, err error) {
-	return recv.File.ReadAt(b, off)
+func Chtimes(name string, atime time.Time, mtime time.Time) error {
+	if VarOsMock == nil {
+		return VarOsMock.Chtimes(name, atime, mtime)
+	}
+	return os.Chtimes(name, atime, mtime)
 }
 
-func (recv *FileImpl) ReadFrom(r io.Reader) (n int64, err error) {
-	return recv.File.ReadFrom(r)
+func Symlink(oldname, newname string) error {
+	if VarOsMock == nil {
+		return VarOsMock.Symlink(oldname, newname)
+	}
+	return os.Symlink(oldname, newname)
 }
 
-func (recv *FileImpl) Write(b []byte) (n int, err error) {
-	return recv.File.Write(b)
+func Getenv(key string) string {
+	if VarOsMock == nil {
+		return VarOsMock.Getenv(key)
+	}
+	return os.Getenv(key)
 }
 
-func (recv *FileImpl) WriteAt(b []byte, off int64) (n int, err error) {
-	return recv.File.WriteAt(b, off)
+func Create(name string) (*os.File, error) {
+	if VarOsMock == nil {
+		return VarOsMock.Create(name)
+	}
+	return os.Create(name)
 }
 
-func (recv *FileImpl) Seek(offset int64, whence int) (ret int64, err error) {
-	return recv.File.Seek(offset, whence)
+func IsPathSeparator(c uint8) bool {
+	if VarOsMock == nil {
+		return VarOsMock.IsPathSeparator(c)
+	}
+	return os.IsPathSeparator(c)
 }
 
-func (recv *FileImpl) WriteString(s string) (n int, err error) {
-	return recv.File.WriteString(s)
+func Lstat(name string) (os.FileInfo, error) {
+	if VarOsMock == nil {
+		return VarOsMock.Lstat(name)
+	}
+	return os.Lstat(name)
 }
 
-func (recv *FileImpl) Chmod(mode os.FileMode) error {
-	return recv.File.Chmod(mode)
+func IsTimeout(err error) bool {
+	if VarOsMock == nil {
+		return VarOsMock.IsTimeout(err)
+	}
+	return os.IsTimeout(err)
 }
 
-func (recv *FileImpl) SetDeadline(t time.Time) error {
-	return recv.File.SetDeadline(t)
+func UserCacheDir() (string, error) {
+	if VarOsMock == nil {
+		return VarOsMock.UserCacheDir()
+	}
+	return os.UserCacheDir()
 }
 
-func (recv *FileImpl) SetReadDeadline(t time.Time) error {
-	return recv.File.SetReadDeadline(t)
+func Truncate(name string, size int64) error {
+	if VarOsMock == nil {
+		return VarOsMock.Truncate(name, size)
+	}
+	return os.Truncate(name, size)
 }
 
-func (recv *FileImpl) SetWriteDeadline(t time.Time) error {
-	return recv.File.SetWriteDeadline(t)
+func Getgid() int {
+	if VarOsMock == nil {
+		return VarOsMock.Getgid()
+	}
+	return os.Getgid()
 }
 
-func (recv *FileImpl) SyscallConn() (syscall.RawConn, error) {
-	return recv.File.SyscallConn()
+func Expand(s string, mapping func(string) string) string {
+	if VarOsMock == nil {
+		return VarOsMock.Expand(s, mapping)
+	}
+	return os.Expand(s, mapping)
 }
 
-func (recv *FileImpl) Close() error {
-	return recv.File.Close()
+func Readlink(name string) (string, error) {
+	if VarOsMock == nil {
+		return VarOsMock.Readlink(name)
+	}
+	return os.Readlink(name)
 }
 
-func (recv *FileImpl) Chown(uid, gid int) error {
-	return recv.File.Chown(uid, gid)
+func MkdirTemp(dir, pattern string) (string, error) {
+	if VarOsMock == nil {
+		return VarOsMock.MkdirTemp(dir, pattern)
+	}
+	return os.MkdirTemp(dir, pattern)
 }
 
-func (recv *FileImpl) Truncate(size int64) error {
-	return recv.File.Truncate(size)
+func Getpagesize() int {
+	if VarOsMock == nil {
+		return VarOsMock.Getpagesize()
+	}
+	return os.Getpagesize()
 }
 
-func (recv *FileImpl) Sync() error {
-	return recv.File.Sync()
+func Hostname() (name string, err error) {
+	if VarOsMock == nil {
+		return VarOsMock.Hostname()
+	}
+	return os.Hostname()
 }
 
-func (recv *FileImpl) Chdir() error {
-	return recv.File.Chdir()
+func LookupEnv(key string) (string, bool) {
+	if VarOsMock == nil {
+		return VarOsMock.LookupEnv(key)
+	}
+	return os.LookupEnv(key)
 }
 
-func (recv *FileImpl) Fd() uintptr {
-	return recv.File.Fd()
+func Clearenv() {
+	if VarOsMock == nil {
+		VarOsMock.Clearenv()
+	}
+	os.Clearenv()
 }
 
-func (recv *FileImpl) Stat() (os.FileInfo, error) {
-	return recv.File.Stat()
+func RemoveAll(path string) error {
+	if VarOsMock == nil {
+		return VarOsMock.RemoveAll(path)
+	}
+	return os.RemoveAll(path)
 }
 
-type SyscallErrorImpl struct {
-	*os.SyscallError
+func Getuid() int {
+	if VarOsMock == nil {
+		return VarOsMock.Getuid()
+	}
+	return os.Getuid()
 }
 
-func (recv *SyscallErrorImpl) Error() string {
-	return recv.SyscallError.Error()
+func Getegid() int {
+	if VarOsMock == nil {
+		return VarOsMock.Getegid()
+	}
+	return os.Getegid()
 }
 
-func (recv *SyscallErrorImpl) Unwrap() error {
-	return recv.SyscallError.Unwrap()
+func CreateTemp(dir, pattern string) (*os.File, error) {
+	if VarOsMock == nil {
+		return VarOsMock.CreateTemp(dir, pattern)
+	}
+	return os.CreateTemp(dir, pattern)
 }
 
-func (recv *SyscallErrorImpl) Timeout() bool {
-	return recv.SyscallError.Timeout()
+func Unsetenv(key string) error {
+	if VarOsMock == nil {
+		return VarOsMock.Unsetenv(key)
+	}
+	return os.Unsetenv(key)
 }
 
-type ProcessImpl struct {
-	*os.Process
+func WriteFile(name string, data []byte, perm os.FileMode) error {
+	if VarOsMock == nil {
+		return VarOsMock.WriteFile(name, data, perm)
+	}
+	return os.WriteFile(name, data, perm)
 }
 
-func (recv *ProcessImpl) Release() error {
-	return recv.Process.Release()
+func Chown(name string, uid, gid int) error {
+	if VarOsMock == nil {
+		return VarOsMock.Chown(name, uid, gid)
+	}
+	return os.Chown(name, uid, gid)
 }
 
-func (recv *ProcessImpl) Kill() error {
-	return recv.Process.Kill()
+func MkdirAll(path string, perm os.FileMode) error {
+	if VarOsMock == nil {
+		return VarOsMock.MkdirAll(path, perm)
+	}
+	return os.MkdirAll(path, perm)
 }
 
-func (recv *ProcessImpl) Wait() (ProcessStateInterface, error) {
-	return recv.Process.Wait()
+func ReadDir(name string) ([]os.DirEntry, error) {
+	if VarOsMock == nil {
+		return VarOsMock.ReadDir(name)
+	}
+	return os.ReadDir(name)
 }
 
-func (recv *ProcessImpl) Signal(sig os.Signal) error {
-	return recv.Process.Signal(sig)
+func Open(name string) (*os.File, error) {
+	if VarOsMock == nil {
+		return VarOsMock.Open(name)
+	}
+	return os.Open(name)
 }
 
-type ProcessStateImpl struct {
-	*os.ProcessState
+func DirFS(dir string) fs.FS {
+	if VarOsMock == nil {
+		return VarOsMock.DirFS(dir)
+	}
+	return os.DirFS(dir)
 }
 
-func (recv *ProcessStateImpl) UserTime() time.Duration {
-	return recv.ProcessState.UserTime()
+func OpenFile(name string, flag int, perm os.FileMode) (*os.File, error) {
+	if VarOsMock == nil {
+		return VarOsMock.OpenFile(name, flag, perm)
+	}
+	return os.OpenFile(name, flag, perm)
 }
 
-func (recv *ProcessStateImpl) SystemTime() time.Duration {
-	return recv.ProcessState.SystemTime()
+func Chmod(name string, mode os.FileMode) error {
+	if VarOsMock == nil {
+		return VarOsMock.Chmod(name, mode)
+	}
+	return os.Chmod(name, mode)
 }
 
-func (recv *ProcessStateImpl) Exited() bool {
-	return recv.ProcessState.Exited()
+func Getwd() (dir string, err error) {
+	if VarOsMock == nil {
+		return VarOsMock.Getwd()
+	}
+	return os.Getwd()
 }
 
-func (recv *ProcessStateImpl) Success() bool {
-	return recv.ProcessState.Success()
+func Pipe() (r *os.File, w *os.File, err error) {
+	if VarOsMock == nil {
+		return VarOsMock.Pipe()
+	}
+	return os.Pipe()
 }
 
-func (recv *ProcessStateImpl) Sys() any {
-	return recv.ProcessState.Sys()
+func FindProcess(pid int) (*os.Process, error) {
+	if VarOsMock == nil {
+		return VarOsMock.FindProcess(pid)
+	}
+	return os.FindProcess(pid)
 }
 
-func (recv *ProcessStateImpl) SysUsage() any {
-	return recv.ProcessState.SysUsage()
+func Exit(code int) {
+	if VarOsMock == nil {
+		VarOsMock.Exit(code)
+	}
+	os.Exit(code)
 }
 
-func (recv *ProcessStateImpl) Pid() int {
-	return recv.ProcessState.Pid()
+func Mkdir(name string, perm os.FileMode) error {
+	if VarOsMock == nil {
+		return VarOsMock.Mkdir(name, perm)
+	}
+	return os.Mkdir(name, perm)
 }
 
-func (recv *ProcessStateImpl) String() string {
-	return recv.ProcessState.String()
+func Chdir(dir string) error {
+	if VarOsMock == nil {
+		return VarOsMock.Chdir(dir)
+	}
+	return os.Chdir(dir)
 }
 
-func (recv *ProcessStateImpl) ExitCode() int {
-	return recv.ProcessState.ExitCode()
+func SameFile(fi1, fi2 os.FileInfo) bool {
+	if VarOsMock == nil {
+		return VarOsMock.SameFile(fi1, fi2)
+	}
+	return os.SameFile(fi1, fi2)
 }
 
-type LinkErrorImpl struct {
-	*os.LinkError
+func Getgroups() ([]int, error) {
+	if VarOsMock == nil {
+		return VarOsMock.Getgroups()
+	}
+	return os.Getgroups()
 }
 
-func (recv *LinkErrorImpl) Error() string {
-	return recv.LinkError.Error()
+func Getpid() int {
+	if VarOsMock == nil {
+		return VarOsMock.Getpid()
+	}
+	return os.Getpid()
 }
 
-func (recv *LinkErrorImpl) Unwrap() error {
-	return recv.LinkError.Unwrap()
+func TempDir() string {
+	if VarOsMock == nil {
+		return VarOsMock.TempDir()
+	}
+	return os.TempDir()
 }
 
-var FS = &OsImpl{}
+func Remove(name string) error {
+	if VarOsMock == nil {
+		return VarOsMock.Remove(name)
+	}
+	return os.Remove(name)
+}
+
+func Geteuid() int {
+	if VarOsMock == nil {
+		return VarOsMock.Geteuid()
+	}
+	return os.Geteuid()
+}
